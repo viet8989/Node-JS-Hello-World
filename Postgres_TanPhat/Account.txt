@@ -1,0 +1,7 @@
+QLBH:
+id:quoccuong
+Pass:tanphat686879
+
+NVBH:
+ID: loan
+Pass:tanphat686879
