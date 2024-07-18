@@ -1,7 +1,28 @@
 QLBH:
 id:quoccuong
 Pass:tanphat686879
+UserId=25
+
+{
+    "ShiftDistributeId": 37163,
+    "UserId": 170,
+    "SalePointId": 2,
+    "ShiftId": 1,
+    "IsEndOfShift": true
+}
+
+{
+    "ShiftDistributeId": 37164,
+    "UserId": 233,
+    "SalePointId": 2,
+    "ShiftId": 2,
+    "IsEndOfShift": false
+}
 
 NVBH:
 ID: loan
 Pass:tanphat686879
+
+admin :
+vinhkthub
+tanphat66668888

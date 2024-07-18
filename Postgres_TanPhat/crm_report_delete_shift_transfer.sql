@@ -2,6 +2,21 @@ CREATE OR REPLACE FUNCTION public.crm_report_delete_shift_transfer(p_action_by i
  RETURNS TABLE("Id" integer, "Message" text)
  LANGUAGE plpgsql
 AS $function$
+-- FUNCTION: public.crm_report_delete_shift_transfer(integer, character varying, integer)
+
+-- DROP FUNCTION IF EXISTS public.crm_report_delete_shift_transfer(integer, character varying, integer);
+
+CREATE OR REPLACE FUNCTION public.crm_report_delete_shift_transfer(
+	p_action_by integer,
+	p_action_by_name character varying,
+	p_shift_distribute_id integer)
+    RETURNS TABLE("Id" integer, "Message" text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
 DECLARE 
 	v_id INT;
 	v_mess TEXT;
@@ -10,7 +25,7 @@ DECLARE
 	v_user_name VARCHAR;
 	v_salepoint_id INT;
 BEGIN
-	SELECT "ShiftDistributeId"
+	SELECT "ShiftTransferId"
 		INTO v_check
 		FROM "ShiftTransfer" WHERE "ShiftDistributeId"= p_shift_distribute_id LIMIT 1;
 	
@@ -29,10 +44,10 @@ BEGIN
 			v_user_name
 		FROM "ShiftDistribute" SD 
 			JOIN "User" U ON U."UserId" = Sd."UserId"
-			WHERE SD."ShiftDistributeId"  = v_check;
+			WHERE SD."ShiftDistributeId"  = p_shift_distribute_id;
 		--DELETE
 		DELETE FROM "ShiftTransfer" 
-			WHERE "ShiftDistributeId" = v_check AND "SalePointId" = v_salepoint_id;
+			WHERE "ShiftTransferId" = v_check;
 		--INSERT LOG
 		INSERT INTO "ShiftTransferLog" (
 			"ActionBy",
@@ -46,7 +61,7 @@ BEGIN
 			p_action_by,
 			p_action_by_name,
 			NOW(),
-			v_check,
+			p_shift_distribute_id,
 			v_salepoint_id,
 			v_user_id,
 			v_user_name
@@ -70,3 +85,7 @@ BEGIN
 	END;
 
 END;
+$BODY$;
+
+ALTER FUNCTION public.crm_report_delete_shift_transfer(integer, character varying, integer)
+    OWNER TO postgres;

@@ -1,0 +1,4 @@
+public class DeleteShiftTransferReq
+
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\report\views\historyActivity.html
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\report\controllers\historyActivity.js
