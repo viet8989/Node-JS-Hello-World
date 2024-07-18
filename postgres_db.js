@@ -12,16 +12,25 @@ const client = new Client({
 
 client.connect();
 
-client.query('Select * From "ShiftDistribute" Order By "ActionDate" DESC Limit 1', (err, res)=>{
-    if(!err){
-        console.log(res.rows);
-    } else {
-        console.log(err.message);
-    }
-    client.end;
-});
+// client.query('Select * From "ShiftDistribute" Order By "ActionDate" DESC Limit 1', (err, res)=>{
+//     if(!err){
+//         console.log(res.rows);
+//     } else {
+//         console.log(err.message);
+//     }
+//     client.end;
+// });
 
-client.query('Select * From "ShiftTransfer" Order By "ActionDate" DESC Limit 1', (err, res)=>{
+// client.query('Select * From "ShiftTransfer" Order By "ActionDate" DESC Limit 1', (err, res)=>{
+//     if(!err){
+//         console.log(res.rows);
+//     } else {
+//         console.log(err.message);
+//     }
+//     client.end;
+// });
+
+client.query('Select * From crm_permission_get_by_title(1)', (err, res)=>{
     if(!err){
         console.log(res.rows);
     } else {
