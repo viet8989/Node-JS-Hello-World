@@ -1,7 +1,7 @@
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\groupMoneyManage.js line 14
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\app.routes.js line 66
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\activity.routes.js line 940
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Provider\UserProvider.cs line 454
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\Views\Shared\_Layout.cshtml line 159
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\views\salaryAdvanceDebt.html
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\salaryAdvanceDebt.js
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Provider\UserProvider.cs line 454
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\groupMoneyManage.js line 14

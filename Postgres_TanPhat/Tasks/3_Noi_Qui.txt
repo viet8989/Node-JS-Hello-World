@@ -1,0 +1,19 @@
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\app.routes.js line 42
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\user.routes.js line 589
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\Views\Shared\_Layout.cshtml line 324
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Domain\Models\User\Enum\UserGetType.cs line 27
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Domain\Models\User\Enum\UserPostType.cs line 26
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.ApiListener\Controllers\UserController.cs line 295
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Business\UserBusiness.cs line 85, 357
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Provider\UserProvider.cs line 84, 628
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Domain\Models\User\ListRuleModel.cs
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Domain\Models\User\ListRuleReq.cs
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Domain\Models\User\InsertUpdateRuleReq.cs
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\views\rule.html
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\controllers\rule.js
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\controllers\modal\addnewrule.js
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\controllers\modal\updaterule.js
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\views\modal\addNewRule.html
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\user\views\modal\updateRule.html
+
+https://chatgpt.com/share/401c98e3-37c5-41c3-bb76-9ed40f6a4b48
