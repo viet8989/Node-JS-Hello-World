@@ -12,8 +12,9 @@ const client = new Client({
 
 client.connect();
 
-// const sql = 'Select * From "User" WHERE "UserId" = 25';
-const sql = "Select * From crm_report_delete_shift_transfer(41, 'Test', 99999)";
+// const sql = 'Select * From "Rule"';
+const sql = 'Select * From "Guest"';
+// const sql = "Select * From crm_report_delete_shift_transfer(41, 'Test', 99999)";
 // const sql = 'SELECT * FROM "ShiftTransfer" WHERE "ShiftDistributeId"= 34740';
 // const sql = 'SELECT * FROM "ShiftTransfer" ORDER BY "ActionDate" DESC LIMIT 2';
 // const sql = 'SELECT st."ShiftDistributeId" FROM "ShiftTransfer" st WHERE (SELECT COUNT(*) FROM "ShiftTransfer" st2 WHERE st2."ShiftDistributeId" = st."ShiftDistributeId") > 1';

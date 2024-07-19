@@ -1,0 +1,95 @@
+CREATE OR REPLACE FUNCTION public.crm_salepoint_create_or_update_guest(p_action_by integer, p_action_by_name character varying, p_action_type integer, p_data text)
+ RETURNS TABLE("Id" integer, "Message" text)
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+	v_id INT;
+	v_mess TEXT;
+	v_phone TEXT;
+	ele JSON;
+BEGIN
+	
+	-- THÊM
+	IF p_action_type = 1 THEN 
+		ele := p_data::JSON;
+		-- Kiểm tra SĐT
+		v_phone := fn_phoneconvert_11_to_10(ele ->> 'Phone');
+		IF LENGTH(v_phone) <> 10 THEN
+			RAISE 'Số điện thoại không đúng cú pháp';
+		END IF;
+		-- Kiểm tra xem đã có số điện thoại và loại khách này chưa
+		IF NOT EXISTS(SELECT 1 FROM "Guest" G WHERE fn_phoneconvert_11_to_10(G."Phone") = v_phone AND G."SalePointId" = (ele ->> 'SalePointId')::INT) THEN 
+			INSERT INTO "Guest"(
+				"FullName",
+				"Phone",
+				"SalePointId",
+				"WholesalePriceId",
+				"ScratchPriceId",
+				"CreatedBy",
+				"CreatedByName"
+			)
+			VALUES(
+				(ele->>'FullName')::VARCHAR,
+				v_phone,
+				(ele->>'SalePointId')::INT,
+				(ele->>'WholesalePriceId')::INT,
+				(ele->>'ScratchPriceId')::INT,
+				p_action_by,
+				p_action_by_name
+			) RETURNING "GuestId" INTO v_id;
+								
+		ELSE
+			RAISE 'Đã tồn tại khách với số điện thoại này trong hệ thống';
+		END IF;
+		
+		v_mess := 'Thêm thành công';
+	-- Sửa
+	ELSEIF p_action_type = 2 THEN
+		ele := p_data::JSON;
+		v_phone := fn_phoneconvert_11_to_10(ele ->> 'Phone');
+		IF LENGTH(v_phone) <> 10 THEN
+			RAISE 'Số điện thoại không đúng cú pháp';
+		END IF;
+		
+		UPDATE "Guest"
+		SET
+			"FullName" = COALESCE((ele ->> 'FullName')::VARCHAR, "FullName"),
+			"Phone" = COALESCE(fn_phoneconvert_11_to_10((ele ->> 'Phone')::VARCHAR) , "Phone"),
+			"WholesalePriceId" = COALESCE((ele ->> 'WholesalePriceId')::INT, "WholesalePriceId"),
+			"ScratchPriceId" = COALESCE((ele ->> 'ScratchPriceId')::INT, "ScratchPriceId"),
+			"ModifyBy" = p_action_by,
+			"ModifyByName" = p_action_by_name,
+			"ModifyDate" = NOW()
+		WHERE 
+			"GuestId" = (ele ->> 'GuestId')::INT;
+		v_id := 1;
+		v_mess := 'Cập nhật thành công';
+	-- Xóa
+	ELSEIF p_action_type = 3 THEN
+		ele := p_data::JSON;
+		UPDATE "Guest"
+		SET
+			"IsActive" = FALSE,
+			"ModifyBy" = p_action_by,
+			"ModifyByName" = p_action_by_name,
+			"ModifyDate" = NOW()
+		WHERE 
+			"GuestId" = (ele ->> 'GuestId')::INT;
+		v_id := 1;
+		v_mess := 'Xóa thành công';
+	END IF;
+
+	RETURN QUERY
+	SELECT v_id, v_mess;
+
+	EXCEPTION WHEN OTHERS THEN
+	BEGIN
+	v_id := -1;
+	v_mess := sqlerrm;
+
+	RETURN QUERY
+	SELECT v_id, v_mess;
+	END;
+
+END;
+$function$

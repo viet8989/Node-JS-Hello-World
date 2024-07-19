@@ -1,5 +1,5 @@
--- SEQUENCE: public.Rule_RuleId_seq
 
+DROP TABLE IF EXISTS public."Rule";
 DROP SEQUENCE IF EXISTS public."Rule_RuleId_seq";
 
 CREATE SEQUENCE IF NOT EXISTS public."Rule_RuleId_seq"
@@ -14,18 +14,15 @@ ALTER SEQUENCE public."Rule_RuleId_seq"
 
 -- Table: public.Rule
 
-DROP TABLE IF EXISTS public."Rule";
-
 CREATE TABLE IF NOT EXISTS public."Rule"
 (
     "RuleId" integer NOT NULL DEFAULT nextval('"Rule_RuleId_seq"'::regclass),
     "Name" character varying(255) COLLATE pg_catalog."default",
     "PathFile" character varying(500) COLLATE pg_catalog."default",
-    "IsActive" boolean DEFAULT true,
     "IsDeleted" boolean DEFAULT false,
-    "ActionBy" integer,
-    "ActionByName" character varying(255) COLLATE pg_catalog."default",
-    "CreateTime" date DEFAULT now(),
+    "CreatedBy" integer,
+    "CreatedByName" character varying(255) COLLATE pg_catalog."default",
+    "CreatedTime" date DEFAULT now(),
     "ModifyBy" integer,
     "ModifyByName" character varying(255) COLLATE pg_catalog."default",
     "ModifyTime" date DEFAULT now(),
