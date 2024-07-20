@@ -13,7 +13,8 @@ const client = new Client({
 client.connect();
 
 // const sql = 'Select * From "Rule"';
-const sql = 'Select * From "Guest"';
+// const sql = 'Select * From "Guest"';
+const sql = "Select * From crm_user_get_list_rule(1)";
 // const sql = "Select * From crm_report_delete_shift_transfer(41, 'Test', 99999)";
 // const sql = 'SELECT * FROM "ShiftTransfer" WHERE "ShiftDistributeId"= 34740';
 // const sql = 'SELECT * FROM "ShiftTransfer" ORDER BY "ActionDate" DESC LIMIT 2';
