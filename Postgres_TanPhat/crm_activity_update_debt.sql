@@ -1,63 +1,107 @@
-CREATE OR REPLACE FUNCTION public.crm_activity_update_debt(p_user_id integer, p_money_pay numeric, p_salepoint_id integer, p_shift_distribute_id integer, p_action_by integer, p_action_by_name character varying)
- RETURNS TABLE("Id" integer, "Message" text)
- LANGUAGE plpgsql
-AS $function$
+DROP FUNCTION IF EXISTS public.crm_activity_update_debt(integer, numeric, character varying, integer, integer, integer, integer, character varying);
+
+CREATE OR REPLACE FUNCTION public.crm_activity_update_debt(
+    p_user_id INTEGER, 
+    p_money_pay NUMERIC, 
+    p_month CHARACTER VARYING, 
+    p_salepoint_id INTEGER, 
+    p_type_name_id INTEGER, 
+    p_action_type INTEGER, 
+    p_action_by INTEGER, 
+    p_action_by_name CHARACTER VARYING
+)
+RETURNS TABLE("Id" INTEGER, "Message" TEXT)
+LANGUAGE 'plpgsql'
+COST 100
+VOLATILE PARALLEL UNSAFE
+ROWS 1000
+AS $BODY$
 DECLARE
     v_id INT;
     v_mess TEXT;
     v_time TIMESTAMP := NOW();
-    v_total_debt DECIMAL;
-    v_total_pay DECIMAL;
+    v_total_debt NUMERIC := 0;
+    v_total_pay NUMERIC := 0;
 BEGIN
-    v_total_debt := (SELECT COALESCE(SUM("Price"), 0) FROM "Transaction" WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id);
-    v_total_pay := (SELECT COALESCE(SUM("Price"), 0) FROM "Transaction" WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id);
+    -- Calculate total debt
+    SELECT COALESCE(SUM("Price"), 0)  
+    INTO v_total_debt
+    FROM "Transaction" 
+    WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
     
-    IF((v_total_pay + p_money_pay) > 0 v_total_debt) THEN 
+    -- Calculate total pay
+    SELECT COALESCE(SUM("Refunds"), 0)  
+    INTO v_total_pay
+    FROM "Transaction" 
+    WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
+    
+    -- Conditional check
+    IF (v_total_pay + p_money_pay) > v_total_debt THEN 
         v_mess := 'Trả quá số nợ cần trả, vui lòng nhập lại';
         v_id := 0;
     ELSE
+        -- Insert new transaction
         INSERT INTO "Transaction"(
-                    "TransactionTypeId",
-                    "Quantity",
-                    "Price",
-                    "TotalPrice",
-                    "SalePointId",
-                    "ShiftDistributeId",
-                    "IsDeleted",
-                    "UserId",
-                    "TypeNameId",
-                    "ActionBy",
-                    "ActionByName",
-                    "ActionDate",
-                    "Date"
-                )
-                VALUES(
-                    15, -- Nhan vien tra no
-                    1,
-                    p_money_pay,
-                    p_money_pay,
-                    p_salepoint_id,
-                    p_shift_distribute_id,
-                    FALSE,
-                    p_user_id,
-                    15,
-                    p_action_by,
-                    p_action_by_name,
-                    v_time,
-                    v_time::DATE
-                );
-	END IF;
+            "TransactionTypeId",
+            "TypeNameId",
+            "Note",
+            "SalePointId",
+            "Quantity",
+            "Price",
+            "TotalPrice",
+            "Refunds",
+            "UserId",
+            "ActionBy",
+            "ActionByName",
+            "ActionDate",
+            "ModifyBy",
+            "ModifyByName",
+            "ModifyDate",
+            "Date"
+        )
+        VALUES(
+            14,
+            p_type_name_id,
+            'Trả nợ',
+            p_salepoint_id,
+            1,
+            0,
+            0,
+            p_money_pay,
+            p_user_id,
+            p_action_by,
+            p_action_by_name,
+            v_time,
+            p_action_by,
+            p_action_by_name,
+            v_time,
+            v_time::DATE
+        );
+        
+        v_id := 1;
+        v_mess := 'Thao tác thành công';
+        -- v_mess := 'Thao tác thành công v_total_debt ' || COALESCE(v_total_debt::TEXT, '0') || ' v_total_pay ' || COALESCE(v_total_pay::TEXT, '0');
+    END IF;
 
     RETURN QUERY
     SELECT v_id, v_mess;
 
-    EXCEPTION WHEN OTHERS THEN
-    BEGIN
-        v_id := -1;
-        v_mess := sqlerrm;
-        RETURN QUERY
-        SELECT v_id, v_mess;
-    END;
-
+EXCEPTION WHEN OTHERS THEN
+    v_id := -1;
+    v_mess := sqlerrm;
+    RETURN QUERY
+    SELECT v_id, v_mess;
 END;
-$function$
+$BODY$;
+
+ALTER FUNCTION public.crm_activity_update_debt(
+    INTEGER, 
+    NUMERIC, 
+    CHARACTER VARYING, 
+    INTEGER, 
+    INTEGER, 
+    INTEGER, 
+    INTEGER, 
+    CHARACTER VARYING
+)
+OWNER TO postgres;

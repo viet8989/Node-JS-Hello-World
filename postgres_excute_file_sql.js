@@ -19,7 +19,7 @@ const config = {
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/table_Rule_viet_create.sql');
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_user_get_list_rule.sql');
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_user_create_or_update_rule.sql');
-const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_get_salary_advance_debt.sql');
+const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_update_debt.sql');
 
 // Read the SQL file
 fs.readFile(sqlFilePath, 'utf8', (err, sql) => {
