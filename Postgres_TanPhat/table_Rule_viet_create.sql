@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public."Rule"
     "IsDeleted" boolean DEFAULT false,
     "CreatedBy" integer,
     "CreatedByName" character varying(255) COLLATE pg_catalog."default",
-    "CreatedTime" date DEFAULT now(),
+    "CreateTime" date DEFAULT now(),
     "ModifyBy" integer,
     "ModifyByName" character varying(255) COLLATE pg_catalog."default",
     "ModifyTime" date DEFAULT now(),

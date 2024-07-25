@@ -6,9 +6,9 @@ const client = new Client({
     user: "postgres",
     port: 5432,
     password: "Vesotanphat686879###",
-    // database: "tanphat_test_v3"
+    database: "tanphat_test_v3"
     // database: "tanphat_crm_prod"
-    database: "tanphat_crm"
+    // database: "tanphat_crm"
 })
 
 const query = `

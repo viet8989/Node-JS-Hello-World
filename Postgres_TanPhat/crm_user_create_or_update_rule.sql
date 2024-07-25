@@ -1,8 +1,22 @@
-DROP FUNCTION IF EXISTS public.crm_user_create_or_update_rule(integer, character, integer, text);
-CREATE OR REPLACE FUNCTION public.crm_user_create_or_update_rule(p_action_by integer, p_action_by_name character varying, p_action_type integer, p_data text)
- RETURNS TABLE("Id" integer, "Message" text)
- LANGUAGE plpgsql
-AS $function$
+-- FUNCTION: public.crm_user_create_or_update_rule(integer, character varying, integer, integer, character varying, character varying)
+
+DROP FUNCTION IF EXISTS public.crm_user_create_or_update_rule(integer, character varying, integer, integer, character varying, character varying);
+
+CREATE OR REPLACE FUNCTION public.crm_user_create_or_update_rule(
+	p_action_by integer,
+	p_action_by_name character varying,
+	p_action_type integer,
+	p_rule_id integer,
+	p_rule_name character varying,
+	p_rule_path_file character varying)
+    RETURNS TABLE("Id" integer, "Message" text) 
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+    ROWS 1000
+
+AS $BODY$
+
 DECLARE
 	v_id INT;
 	v_mess TEXT;
@@ -10,17 +24,16 @@ BEGIN
 	
 	-- THÊM
 	IF p_action_type = 1 THEN 
-		ele := p_data::JSON;
 		INSERT INTO "Rule"(
 				"Name",
 				"PathFile",
 				"CreatedBy",
 				"CreatedByName",
-				"CreatedByTime"
+				"CreateTime"
 			)
 			VALUES(
-				(ele->>'Name')::VARCHAR,
-				(ele->>'PathFile')::VARCHAR,
+				p_rule_name,
+				p_rule_path_file,
 				p_action_by,
 				p_action_by_name,
 				NOW()
@@ -29,29 +42,27 @@ BEGIN
 		v_mess := 'Thêm thành công';
 	-- Sửa
 	ELSEIF p_action_type = 2 THEN
-		ele := p_data::JSON;
 		UPDATE "Rule"
 		SET
-			"Name" = COALESCE((ele ->> 'Name')::VARCHAR, "Name"),
-			"PathFile" = COALESCE((ele ->> 'PathFile')::VARCHAR, "PathFile"),
+			"Name" = p_rule_name,
+			"PathFile" = p_rule_path_file,
 			"ModifyBy" = p_action_by,
 			"ModifyByName" = p_action_by_name,
-			"ModifyDate" = NOW()
+			"ModifyTime" = NOW()
 		WHERE 
-			"RuleId" = (ele ->> 'RuleId')::INT;
+			"RuleId" = p_rule_id;
 		v_id := 1;
 		v_mess := 'Cập nhật thành công';
 	-- Xóa
 	ELSEIF p_action_type = 3 THEN
-		ele := p_data::JSON;
 		UPDATE "Rule"
 		SET
 			"IsDeleted" = TRUE,
 			"ModifyBy" = p_action_by,
 			"ModifyByName" = p_action_by_name,
-			"ModifyDate" = NOW()
+			"ModifyTime" = NOW()
 		WHERE 
-			"RuleId" = (ele ->> 'RuleId')::INT;
+			"RuleId" = p_rule_id;
 		v_id := 1;
 		v_mess := 'Xóa thành công';
 	END IF;
@@ -69,4 +80,7 @@ BEGIN
 	END;
 
 END;
-$function$
+$BODY$;
+
+ALTER FUNCTION public.crm_user_create_or_update_rule(integer, character varying, integer, integer, character varying, character varying)
+    OWNER TO postgres;

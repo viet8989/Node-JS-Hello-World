@@ -1,7 +1,96 @@
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\app.routes.js line 66
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\activity.routes.js line 940
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\Views\Shared\_Layout.cshtml line 159
+C:\Users\Vietnhq\source\repos\lottery-management\TANPHAT.CRM\wwwroot\app\app.routes.js line 67
+C:\Users\Vietnhq\source\repos\lottery-management\TANPHAT.CRM\wwwroot\app\activity\activity.routes.js line 2212
+C:\Users\Vietnhq\source\repos\lottery-management\TANPHAT.CRM\Views\Shared\_Layout.cshtml line 175
+C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\groupMoneyManage.js line 14
+C:\Users\Vietnhq\source\repos\lottery-management\TANPHAT.CRM\wwwroot\app\activity\services\activityService.js line 585
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\views\salaryAdvanceDebt.html
 C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\salaryAdvanceDebt.js
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM.Provider\UserProvider.cs line 454
-C:\CRM_Ve_So_Hoa_Phat\Source\TANPHAT.CRM\wwwroot\app\activity\controllers\groupMoneyManage.js line 14
+
+CREATE OR REPLACE FUNCTION public.crm_salepoint_get_list_transaction(p_month character varying, p_user_id integer DEFAULT 0, p_type integer DEFAULT 0)
+ RETURNS TABLE("TransactionId" integer, "TransactionTypeId" integer, "TransactionTypeName" character varying, "Note" character varying, "IsSum" boolean, "Quantity" integer, "Price" numeric, "TotalPrice" numeric, "SalePointId" integer, "SalePointName" character varying, "ShiftDistributeId" integer, "TypeName" character varying, "UserId" integer, "Date" date, "ActionBy" integer, "ActionByName" character varying, "ActionDate" timestamp without time zone)
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+	RETURN QUERY
+	SELECT 
+		T."TransactionId",
+		T."TransactionTypeId",
+		TT."TransactionTypeName",
+		T."Note",
+		TT."IsSum",
+		T."Quantity",
+		T."Price",
+		T."TotalPrice",
+		T."SalePointId",
+		SP."SalePointName",
+		T."ShiftDistributeId",
+		TN."Name" AS "TypeName",
+		T."UserId",
+		T."Date",
+		T."ActionBy",
+		T."ActionByName",
+		T."ActionDate"
+	FROM "Transaction" T
+		JOIN "TransactionType" TT ON T."TransactionTypeId" = TT."TransactionTypeId"
+		LEFT JOIN "SalePoint" SP ON SP."SalePointId" = T."SalePointId"
+		LEFT JOIN "TypeName" TN ON T."TypeNameId" = TN."TypeNameId"
+	WHERE T."IsDeleted" IS FALSE
+		AND (CASE WHEN p_type = 1 THEN T."TransactionTypeId" IN (4,5,6,7) ELSE TRUE END)
+		AND TO_CHAR(T."Date", 'YYYY-MM') = p_month
+		AND (COALESCE(p_user_id, 0) = 0 OR T."ActionBy" = p_user_id)
+	ORDER BY T."TransactionTypeId", T."Date" DESC;
+END;
+$function$
+
+
+NV ghi no: Transaction => TransactionTypeId = 14
+
+NV tra no: crm_activity_update_debt // KO CO TRONG Database
+
+TABLE "Debt" cung khong co trong database
+
+ở menu Báo Cáo => Lương nhân viên
+có tính năng "Cập nhật tiền trả nợ trong tháng", thao tác thử trên web test thì bị lỗi
+tra code ra thì gọi tới function này: crm_activity_update_debt
+nhưng mà tìm trong database không có function "crm_activity_update_debt"
+em đang cần đọc code function này để biết chỗ lấy ra lịch sử trả nợ của nhân viên
+không có em không lấy được
+
+
+
+
+CREATE OR REPLACE FUNCTION public.crm_activity_update_debt(p_user_id bigint, p_payed_debt numeric, p_month character varying, p_salepoint_id bigint DEFAULT 0, p_total_debt numeric DEFAULT 0, p_flag boolean DEFAULT false)
+ RETURNS TABLE("Id" integer, "Message" text)
+ LANGUAGE plpgsql
+AS $function$
+DECLARE
+    v_id INT;
+    v_mess TEXT;
+    ele JSON;
+    v_time TIMESTAMP := NOW();
+		v_check DECIMAL := (SELECT SUM(D."TotalDebt") + COALESCE(p_total_debt,0) FROM "Debt" D WHERE D."UserId" = p_user_id AND D."IsAdded" IS TRUE) ;
+		-- - (SELECT SUM(D."PayedDebt") FROM "Debt" D WHERE D."UserId" = p_user_id ) - COALESCE(p_payed_debt,0);
+BEGIN
+			IF( v_check < 0 ) THEN 
+				v_mess := 'Trả quá số nợ cần trả, vui lòng nhập lại';
+				v_id := 0;
+			ELSE
+				RAISE NOTICE 'viet%',v_check;
+				INSERT INTO "Debt" ("UserId","TotalDebt","PayedDebt","Month","SalePointId","SalePointName","IsAdded","ActionDate","DebtDone")
+				VALUES (p_user_id,COALESCE(p_total_debt,(SELECT SUM(D."TotalDebt") - p_payed_debt FROM "Debt" D WHERE D."UserId" = p_user_id AND D."IsAdded" = TRUE)),p_payed_debt + p_total_debt,p_month,p_salepoint_id,(SELECT S."SalePointName" FROM "SalePoint" S WHERE S."SalePointId" = p_salepoint_id),p_flag,NOW(), p_payed_debt );
+				v_mess := 'Thêm nợ thành công';
+				v_id := 1;
+			END IF;
+    RETURN QUERY
+    SELECT v_id, v_mess;
+
+    EXCEPTION WHEN OTHERS THEN
+    BEGIN
+        v_id := -1;
+        v_mess := sqlerrm;
+        RETURN QUERY
+        SELECT v_id, v_mess;
+    END;
+
+END;
+$function$
