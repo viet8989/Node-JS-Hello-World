@@ -32,7 +32,7 @@ BEGIN
     WHERE 
         COALESCE(T."IsDeleted", FALSE) IS FALSE
         AND T."TransactionTypeId" = 14
-        AND (p_user_title_id = 1 OR p_user_title_id = 3 OR T."UserId" = p_user_id)
+        AND (p_user_title_id = 1 OR p_user_title_id = 6 OR T."UserId" = p_user_id)
     GROUP BY 
         T."UserId", 
         U."FullName", 

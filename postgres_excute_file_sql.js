@@ -9,19 +9,22 @@ const config = {
     port: 5432,
     password: "Vesotanphat686879###",
     database: "tanphat_test_v3"
-    // database: "tanphat_crm_prod"
     // database: "tanphat_crm"
+    // database: "tanphat_crm_prod"
 };
 
 // Path to your SQL file
-// const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_report_delete_shift_transfer_OLD.sql');
 
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/table_Rule_viet_create.sql');
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_user_get_list_rule.sql');
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_user_create_or_update_rule.sql');
+
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_update_debt.sql');
-const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_get_summary_debt.sql');
+
+// const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_get_summary_debt.sql');
 // const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/crm_activity_get_history_debt.sql');
+
+const sqlFilePath = path.join(__dirname, 'Postgres_TanPhat/TargetData_insert.sql');
 
 // Read the SQL file
 fs.readFile(sqlFilePath, 'utf8', (err, sql) => {

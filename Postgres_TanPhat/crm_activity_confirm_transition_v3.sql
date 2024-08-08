@@ -122,6 +122,17 @@ BEGIN
 						WHERE "TransitionId" = (ele ->> 'TransitionId')::INT
 							AND "ConfirmStatusId" = 1 and "ToSalePointId" = p_sale_point_id;
 				END IF;
+				-- Start Viet Edit
+				UPDATE "Inventory"
+				SET "TotalRemaining" = "TotalReceived" - COALESCE((SELECT SUM("Quantity") 
+															FROM "SalePointLog" 
+															WHERE "LotteryDate"=(ele ->> 'LotteryDate')::DATE
+															AND "LotteryChannelId" = (ele ->> 'LotteryChannelId')::INT
+															AND "SalePointId" = p_sale_point_id),0)
+				WHERE "LotteryDate" = (ele ->> 'LotteryDate')::DATE
+					AND "LotteryChannelId" = (ele ->> 'LotteryChannelId')::INT
+					AND "SalePointId" = p_sale_point_id;
+				-- End Viet Edit
             ELSE
 					if NOT  EXISTS(SELECT 1 FROM "Scratchcard" WHERE "LotteryChannelId" = (ele ->> 'LotteryChannelId')::INT and "SalePointId" = p_sale_point_id)   then
 						INSERT INTO "Scratchcard"(

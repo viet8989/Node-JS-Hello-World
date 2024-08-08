@@ -27,13 +27,13 @@ BEGIN
     SELECT COALESCE(SUM("Price"), 0)  
     INTO v_total_debt
     FROM "Transaction" 
-    WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
+    WHERE COALESCE("IsDeleted", FALSE) = FALSE AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
     
     -- Calculate total pay
     SELECT COALESCE(SUM("Refunds"), 0)  
     INTO v_total_pay
     FROM "Transaction" 
-    WHERE "IsDeleted" = false AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
+    WHERE COALESCE("IsDeleted", FALSE) = FALSE AND "TransactionTypeId" = 14 AND "UserId" = p_user_id;
     
     -- Conditional check
     IF (v_total_pay + p_money_pay) > v_total_debt THEN 
@@ -82,7 +82,6 @@ BEGIN
         
         v_id := 1;
         v_mess := 'Thao tác thành công';
-        -- v_mess := 'Thao tác thành công v_total_debt ' || COALESCE(v_total_debt::TEXT, '0') || ' v_total_pay ' || COALESCE(v_total_pay::TEXT, '0');
     END IF;
 
     RETURN QUERY

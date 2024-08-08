@@ -30,10 +30,9 @@ console.log("Connected to database ", client.database);
 // const sql = 'SELECT * FROM "Transaction" ORDER BY "ModifyDate" DESC LIMIT 1';
 // const sql = 'SELECT * FROM "PermissionRole"';
 
-// const sql = 'INSERT INTO public."PermissionRole"("PermissionRoleId", "RoleName", "PermissionId", "ActionName", "Sort", "IsShowMenu", "IsSubMenu", "RoleDisplayName") VALUES(101,\'rule\', 3, \'rule\', 101, true, true, \'Nội quy\');';
+// const sql = 'INSERT INTO public."PermissionRole"("PermissionRoleId", "RoleName", "PermissionId", "ActionName", "Sort", "IsShowMenu", "IsSubMenu", "RoleDisplayName") VALUES(102,\'rule\', 3, \'rule\', 102, true, true, \'Nội quy\');';
 
-// const sql = 'INSERT INTO public."TransactionType"("TransactionTypeId", "TransactionTypeName", "IsSum", "IsActive", "Description", "IsCountForUser") VALUES(15, \'Nhân Viên Trả Nợ\', true, true, \'\', true)';
-// const sql = 'SELECT * FROM "PermissionRole" A WHERE A."RoleDisplayName"=\'QL trưởng nhóm\'';
+const sql = 'SELECT * FROM "PermissionRole" WHERE "RoleName"=\'rule\'';
 // const sql = 'SELECT st."ShiftDistributeId" FROM "ShiftTransfer" st WHERE (SELECT COUNT(*) FROM "ShiftTransfer" st2 WHERE st2."ShiftDistributeId" = st."ShiftDistributeId") > 1';
 // const sql = 'SELECT SD."SalePointId", SD."UserId", U."FullName" FROM "ShiftDistribute" SD JOIN "User" U ON U."UserId" = Sd."UserId" WHERE SD."ShiftDistributeId" = 37100';
 // const sql = 'Select * From "ShiftDistribute" WHERE "UserId" = 185 Order By "DistributeDate" DESC Limit 10';
@@ -46,7 +45,19 @@ console.log("Connected to database ", client.database);
 // const sql = 'Select * From "SalePointLog" ORDER BY "ActionDate" DESC LIMIT 1';
 // const sql = 'Select * From "HistoryOfOrder" WHERE "HistoryOfOrderId" = 3983943';
 // const sql = 'Select * From "InventoryConfirm" ORDER BY "LotteryDate" DESC LIMIT 1';
-const sql = 'Select * From "Inventory" ORDER BY "InventoryId" DESC LIMIT 2';
+// const sql = 'Select * From "Inventory" ORDER BY "InventoryId" DESC LIMIT 2';
+
+
+// const sql = 'Delete From public."TargetData" WHERE "TargetDataId" = 81;';
+
+// const sql = 'Select * From "TargetData" WHERE "TargetDataTypeId" = 5 ORDER BY "CreatedDate" DESC LIMIT 3;';
+
+// const sql = 'Select * From "Transition" WHERE "TransitionTypeId" = 3 ORDER BY "LotteryDate" DESC LIMIT 2';
+
+// const sql = 'INSERT INTO public."TargetData"("TargetDataTypeId", "FromValue", "ToValue", "Value") VALUES(4,-200, -101, 0.6)';
+// const sql = 'INSERT INTO public."TargetData"("TargetDataTypeId", "FromValue", "ToValue", "Value") VALUES(4,-300, -201, 0.5)';
+// const sql = 'INSERT INTO public."TargetData"("TargetDataTypeId", "FromValue", "ToValue", "Value") VALUES(5,-200, -101, 0.6)';
+// const sql = 'INSERT INTO public."TargetData"("TargetDataTypeId", "FromValue", "ToValue", "Value") VALUES(5,-300, -201, 0.5)';
 
 
 console.log("")

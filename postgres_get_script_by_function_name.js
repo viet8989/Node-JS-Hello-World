@@ -18,7 +18,7 @@ const client = new Client({
 // const functionName = "crm_get_salary_of_user_by_month_v10";
 // const functionName = "crm_activity_sell_get_data_v10";
 // const functionName = "crm_activity_confirm_transition_v3";
-const functionName = "crm_activity_sell_lottery_v4";
+const functionName = "crm_report_get_total_lottery_return_in_month_v2";
 const isSave = true;
 
 const query = `
